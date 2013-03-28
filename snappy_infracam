@@ -1,0 +1,11 @@
+#!/bin/sh
+PATH=$PATH:/krebs/util/bin
+PICDIR=pics_infracam
+export GRAPHITE_HOST=no_omo
+mkdir -p $PICDIR
+
+while sleep 60; do
+	now=$(timer)
+	wget --retry-connrefused -O $PICDIR/"$(date +%s).jpg" 'http://infracam.shack:81/snapshot.cgi?user=view&pwd=view' || logger 'cannot download image'
+	graphitec 'shack.instacam.infracam_pics_timer' $(timer $now)
+done

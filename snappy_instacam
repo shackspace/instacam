@@ -1,0 +1,6 @@
+#!/bin/sh
+PICDIR=pics
+mkdir -p $PICDIR
+while sleep 60; do
+	(wget --retry-connrefused -O $PICDIR/"$(date +%s).jpg" http://10.42.13.88/?action=snapshot && logger 'saved $(date+%s)') || logger "cannot download image"
+done

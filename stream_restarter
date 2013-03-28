@@ -1,0 +1,4 @@
+#!/bin/sh
+while sleep 60; do
+	curl http://api.ustream.tv/json/channel/s21-instacam/getValueOf/status | grep -q "live" || (supervisorctl restart s21_stream)
+done
