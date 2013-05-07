@@ -1,0 +1,24 @@
+#!/bin/sh
+INRES="640x480" # input resolution
+OUTRES="640x480"
+FPS="1" # target FPS
+OUTFPS="1" # target FPS
+#FILTER="rotate=180,flip"
+#FILTER=""
+QUAL="fast"  # one of the many FFMPEG preset
+#INURL='http://10.42.12.146/?action=stream'
+#INURL='http://lazorcam.shack/?action=stream'
+INURL='http://10.42.13.88/?action=stream'
+APIKEY=QWFj5BRVdExEnZaUg43tk2x8sCGfweSu
+CHANNEL=13144235
+#URL="rtmp://1.$CHANNEL.fme.ustream.tv/ustreamVideo/$CHANNEL/$APIKEY flashver=FME/2.5\20(compatible;\20FMSc\201.0)"
+URL="rtmp://live.justin.tv/app/live_39524128_3w7ywFhIIvaMy5jNSqYy3KZUXZmaOC"
+
+FFMPEG=/usr/bin/ffmpeg
+
+while sleep 1;do
+#	pkill ffmpeg
+	$FFMPEG -re -rtbufsize 10000k -i "rtsp://view:view@infracam.shack:554/H264" -f h264 -s "640x480"  -r "$FPS" -acodec copy -vcodec copy  -threads 0 -s "$OUTRES" -f flv "$URL"
+#	trap 'kill $$' INT QUIT TERM EXIT
+done
+

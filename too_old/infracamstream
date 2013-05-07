@@ -1,0 +1,38 @@
+#!/bin/sh
+INRES="1280x720" # input resolution
+OUTRES="640x480"
+FPS="15" # target FPS
+OUTFPS="1" # target FPS
+FILTER="rotate=180,flip"
+#FILTER=""
+QUAL="fast"  # one of the many FFMPEG preset
+#INURL='http://10.42.12.146/?action=stream'
+#INURL='http://lazorcam.shack/?action=stream'
+INURL='http://10.42.13.88/?action=stream'
+APIKEY=QWFj5BRVdExEnZaUg43tk2x8sCGfweSu
+CHANNEL=13144235
+#URL="rtmp://1.$CHANNEL.fme.ustream.tv/ustreamVideo/$CHANNEL/$APIKEY flashver=FME/2.5\20(compatible;\20FMSc\201.0)"
+URL="rtmp://live.justin.tv/app/live_39524128_3w7ywFhIIvaMy5jNSqYy3KZUXZmaOC"
+
+#txtfilter="-vf \"drawtext=fontfile=/usr/share/fonts/truetype/DroidSans.ttf: \
+#text='tod- %X':x=(w-text_w)/2:y=H-60 :fontcolor=white :box=1:boxcolor=0x00000000@1\""
+FFMPEG=/usr/bin/ffmpeg
+
+while sleep 1;do
+#	pkill ffmpeg
+#	$FFMPEG -re -rtbufsize 10000k -i "rtsp://view:view@10.42.13.175:554/H264" -vf "$FILTER" -f h264 -s "640x480"  -r "$FPS" -acodec copy -vcodec copy  -f rtsp -rtsp_transport tcp rtsp://geisha:8888/live.sdp http://127.0.0.1/infracam.ffm #-f flv -g 3 "$URL"
+	$FFMPEG -re -rtbufsize 100k -i "rtsp://view:view@10.42.13.175:554/H264" -f h264 -s "640x480"  -r "$FPS" -acodec copy -vcodec copy -f ffm http://127.0.0.1/infracam.ffm #-f flv -g 3 "$URL"
+#	trap "kill $$" INT QUIT TERM EXIT
+done
+
+#re? try removing
+# -acodec copy ...try
+
+#--keyint <integer> (x264)
+#-g <integer> (FFmpeg)
+#-f h264
+
+#You can test playback using ffplay: 
+#  ffplay rtsp://192.168.1.1/path/to/stream 
+
+#If that does not work well, then you are going to have grief using avlib/libav/FFMPEG (what the heck is this thing called anyway?). 

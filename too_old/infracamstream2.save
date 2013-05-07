@@ -1,0 +1,33 @@
+#!/bin/sh
+INRES="1280x720" # input resolution
+OUTRES="640x480"
+FPS="10" # target FPS
+QUAL="fast"  # one of the many FFMPEG preset
+#INURL='http://10.42.12.146/?action=stream'
+#INURL='http://lazorcam.shack/?action=stream'
+INURL='http://10.42.13.88/?action=stream'
+APIKEY=QWFj5BRVdExEnZaUg43tk2x8sCGfweSu
+CHANNEL=13144235
+#URL="rtmp://1.$CHANNEL.fme.ustream.tv/ustreamVideo/$CHANNEL/$APIKEY flashver=FME/2.5\20(compatible;\20FMSc\201.0)"
+URL="rtmp://live.justin.tv/app/live_39524128_3w7ywFhIIvaMy5jNSqYy3KZUXZmaOC"
+
+
+FFMPEG=/usr/bin/ffmpeg
+
+#while sleep 1;do
+#	pkill ffmpeg
+	$FFMPEG -re -i "http://infracam.shack:81/livestream.cgi?user=view&pwd=view" -f h264 -s "640x480" -r "$FPS" -acodec copy -vcodec copy -f flv -g 3 "$URL"
+#	trap "kill $$" INT QUIT TERM EXIT
+#done
+
+#re? try removing
+# -acodec copy ...try
+
+#--keyint <integer> (x264)
+#-g <integer> (FFmpeg)
+#-f h264
+
+#You can test playback using ffplay: 
+#  ffplay rtsp://192.168.1.1/path/to/stream 
+
+#If that does not work well, then you are going to have grief using avlib/libav/FFMPEG (what the heck is this thing called anyway?). 

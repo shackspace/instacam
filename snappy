@@ -1,13 +1,15 @@
 #!/bin/sh
 # $0 NAME URL
+[ $# -ne 2 ] && echo "usage $0 NAME URL" && exit 1
+
 PICDIR="pics_$1"
 URL="$2"
 PATH=$PATH:/krebs/util/bin
 export GRAPHITE_HOST=no_omo
 mkdir -p $PICDIR
-
+set -x
 while sleep 60; do
 	now=$(timer)
 	wget --retry-connrefused -O $PICDIR/"$(date +%s).jpg" "$URL" || logger 'cannot download image'
-	graphitec 'shack.snappy.${1}_pics_timer' $(timer $now)
+	graphitec "shack.snappy.${1}_timer" "$(timer $now)"
 done
