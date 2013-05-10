@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# User Parameters:
+
+# if verbose is set : print removed and kept files
+verbose=${verbose:-}
+# how much seconds should be between the pics
+# Default: keep a picture of every 5 minutes
+timespan=${timespan:-300}
+
+
+current=0
+#files are called unix-date.jpg
+find $1 -type f | sort -n|  while read line;do
+	deadline=$(expr $current + 300)
+	this=${line%.jpg}
+	this=${this##*/}
+	if [ $deadline -gt $this ];then
+#		echo "flagged: $line"
+		rm ${verbose:+-v} $line
+	else
+		[ -n "${verbose:-}" ] && echo "keep   : $line"
+		current=$this
+	fi
+done
