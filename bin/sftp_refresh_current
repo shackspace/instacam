@@ -1,0 +1,11 @@
+#!/bin/sh
+HERE="$(dirname $(readlink -f $0))"
+LOCAL_FILE=${1?usage: $0 path-to-file remote-dir}
+REM_DIR=${2?usage: $0 path-to-file remote-dir}
+IDENTITY=$HERE/keys/pigstarter
+HOST=instacam@pigstarter
+sftp -i $IDENTITY $HOST <<EOF
+cd $REM_DIR
+put $LOCAL_FILE
+ln -s "$(basename $LOCAL_FILE)" current
+EOF

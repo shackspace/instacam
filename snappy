@@ -4,12 +4,18 @@
 
 PICDIR="pics_$1"
 URL="$2"
-PATH=$PATH:/krebs/util/bin
+PATH=$PATH:/krebs/util/bin:$(dirname $(readlink -f $0))/bin
 export GRAPHITE_HOST=no_omo
+SLEEP_TIME=${SLEEP_TIME:-60}
 mkdir -p $PICDIR
 set -x
-while sleep 60; do
+while sleep $SLEEP_TIME; do
 	now=$(timer)
-	wget --retry-connrefused -O $PICDIR/"$(date +%s).jpg" "$URL" || logger 'cannot download image'
+	PIC="$PICDIR/$(date +%s).jpg"
+	if wget --retry-connrefused -O "$PIC" "$URL" ;then
+		sftp_refresh_paramiko "$PIC" "img/$1"
+	else
+		logger 'cannot download image'
+	fi
 	graphitec "shack.snappy.${1}_timer" "$(timer $now)"
 done

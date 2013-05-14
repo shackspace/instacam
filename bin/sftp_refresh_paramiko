@@ -1,0 +1,30 @@
+#!/usr/bin/python2
+import paramiko
+from os.path import basename,dirname,realpath
+import sys
+if len(sys.argv) != 3: 
+	print ("""usage: %s local-file remote-folder
+	will copy the local-file to remote-folder and create a symlink to 'current'"""%sys.argv[0])
+	sys.exit(1)
+	
+sftp_server = "pigstarter"
+username="instacam"
+here=dirname(realpath(sys.argv[0]))
+key_file=here+"/keys/pigstarter"
+t = paramiko.Transport((sftp_server, 22)) 
+mykey = paramiko.RSAKey.from_private_key_file(key_file)
+t.connect(username=username,pkey=mykey)
+sftp = paramiko.SFTPClient.from_transport(t)
+print("Chdir to %s"%sys.argv[2])
+sftp.chdir(sys.argv[2])
+base= basename(sys.argv[1])
+current = "current."+base.split('.')[-1]
+print("Putting %s to %s"%(sys.argv[1],base))
+sftp.put(sys.argv[1],base)
+print("Trying Unlink '%s'"%current)
+try:
+	sftp.unlink(current)
+	print("Success!")
+except: print("No Such File")
+print ("symlinking %s to %s"%(base,current))
+sftp.symlink(base,current)

@@ -1,0 +1,3 @@
+. input/infracam_rtsp
+. quality/640_low_ultrafast
+. output/ustream_infracam

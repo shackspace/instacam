@@ -1,0 +1,7 @@
+#!/bin/bash
+set -x
+./instacam_restart_mjpeg  
+for i in s21_stream_{insta,infra}cam;do
+	supervisorctl restart $i
+done
+./restart_all_ff-mpeg

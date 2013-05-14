@@ -1,24 +1,23 @@
 #!/bin/sh
-INRES="640x480" # input resolution
-OUTRES="640x480"
-FPS="1" # target FPS
-QUAL="fast"  # one of the many FFMPEG preset
-#INURL='http://10.42.12.146/?action=stream'
-#INURL='http://lazorcam.shack/?action=stream'
-INURL='rtsp://view:view@infracam.shack:554/H264'
-APIKEY=QWFj5BRVdExEnZaUg43tk2x8sCGfweSu
-CHANNEL=13144235
-URL="rtmp://1.$CHANNEL.fme.ustream.tv/ustreamVideo/$CHANNEL/$APIKEY flashver=FME/2.5\20(compatible;\20FMSc\201.0)"
-#URL="rtmp://live.justin.tv/app/live_39524128_3w7ywFhIIvaMy5jNSqYy3KZUXZmaOC"
 
 
+# provides $IN_OPTS
+. profiles/input/infracam_rtsp
+# provides QUALITY_OPTS
+. profiles/quality/640_low_ultrafast
+# provides $OUT_OPTS $OUT_URL
+#. profiles/output/ustream_infracam
+. profiles/output/justintv_instacam
 FFMPEG=/usr/bin/ffmpeg
 PATH=$PATH:/krebs/util/bin
 
+
 while sleep 1;do
 	now=$(timer)
-	$FFMPEG  -re  -i "$INURL" -s "$INRES" -r 25 -vcodec libx264 -x264opts keyint=1 -r "$FPS" -preset ultrafast -crf 26 -threads 0 -s "$OUTRES" -f flv "$URL" 
+#	pkill -9 ffmpeg
+	$FFMPEG  -re $IN_OPTS  $QUALITY_OPTS $OUT_OPTS "$OUT_URL" -loglevel info
 	then=$(timer $now)
-	echo "$FFMPEG running for $then ms"
-	GRAPHITE_HOST=no_omo graphitec shack.streamer.infracam.runtime $then
+        echo "$FFMPEG running for $then ms"
+        GRAPHITE_HOST=no_omo graphitec shack.streamer.instacam.runtime $then
+#trap "kill $$" INT QUIT TERM EXIT
 done
